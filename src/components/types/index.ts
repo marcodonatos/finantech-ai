@@ -14,3 +14,4 @@ export interface Summary {
   balance: number;
   savingsRate: number;
 }
+

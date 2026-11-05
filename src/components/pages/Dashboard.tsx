@@ -8,6 +8,13 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import type { Summary, Transaction } from "../types";
+
+interface DashboardProps {
+  summary: Summary;
+  transactions: Transaction[];
+}
+
 import { summary } from "../data/mockData";
 
 import SummaryCard from "../dashboard/SummaryCard";
@@ -21,7 +28,10 @@ const currency = (value: number) =>
     currency: "BRL",
   });
 
-export default function Dashboard() {
+export default function Dashboard({
+  summary,
+  transactions,
+}: DashboardProps) {
   return (
     <div className="space-y-6">
 
