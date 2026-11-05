@@ -1,6 +1,10 @@
 
 import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
-import { transactions } from "../../components/data/mockData";
+import type { Transaction } from "../../types";
+
+interface RecentTransactionsProps {
+  transactions: Transaction[];
+}
 
 const currency = (value: number) =>
   value.toLocaleString("pt-BR", {
@@ -8,7 +12,9 @@ const currency = (value: number) =>
     currency: "BRL",
   });
 
-export default function RecentTransactions() {
+export default function RecentTransactions({
+  transactions,
+}: RecentTransactionsProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-5 flex items-center justify-between">

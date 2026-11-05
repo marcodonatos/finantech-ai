@@ -1,6 +1,6 @@
 
 import { useEffect, useMemo, useState } from "react";
-import type { Transaction } from "../components/types";
+import type { Transaction } from "../types";
 
 const STORAGE_KEY = "finantech-transactions";
 

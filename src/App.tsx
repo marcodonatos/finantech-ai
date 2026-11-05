@@ -1,8 +1,8 @@
 
 import { useState } from "react";
-import MainLayout from "./components/layout/MainLayout";
-import Dashboard from "./components/pages/Dashboard";
-import Transactions from "./components/pages/Transactions";
+import MainLayout from "./layout/MainLayout";
+import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
 import { useTransactions } from "./hooks/useTransactions";
 
 export default function App() {

@@ -15,12 +15,12 @@ interface DashboardProps {
   transactions: Transaction[];
 }
 
-import { summary } from "../data/mockData";
 
-import SummaryCard from "../dashboard/SummaryCard";
-import CashFlowChart from "../dashboard/CashFlowChart";
-import ExpenseChart from "../dashboard/ExpenseChart";
-import RecentTransactions from "../dashboard/RecentTransactions";
+
+import SummaryCard from "../components/dashboard/SummaryCard";
+import CashFlowChart from "../components/dashboard/CashFlowChart";
+import ExpenseChart from "../components/dashboard/ExpenseChart";
+import RecentTransactions from "../components/dashboard/RecentTransactions";
 
 const currency = (value: number) =>
   value.toLocaleString("pt-BR", {
@@ -49,7 +49,7 @@ export default function Dashboard({
       {/* Indicadores */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-        <SummaryCard
+         <SummaryCard
           title="Saldo disponível"
           value={currency(summary.balance)}
           description="Saldo do período"
@@ -82,8 +82,8 @@ export default function Dashboard({
 
       {/* Gráficos */}
       <section className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-        <CashFlowChart />
-        <ExpenseChart />
+        <CashFlowChart transactions={transactions} />
+        <ExpenseChart transactions={transactions} />
       </section>
 
       {/* Assistente IA */}
@@ -118,7 +118,7 @@ export default function Dashboard({
       </section>
 
       {/* Movimentações */}
-      <RecentTransactions />
+      <RecentTransactions transactions={transactions.slice(0, 5)} />
 
     </div>
   );
