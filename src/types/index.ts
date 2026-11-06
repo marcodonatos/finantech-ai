@@ -15,3 +15,17 @@ export interface Summary {
   savingsRate: number;
 }
 
+
+export interface FinancialGoal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  deadline: string;
+  createdAt: string;
+}
+
+export type GoalInput = Pick<
+  FinancialGoal,
+  "name" | "targetAmount" | "deadline"
+>;

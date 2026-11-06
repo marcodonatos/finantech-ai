@@ -134,7 +134,8 @@ const cashFlowData = useMemo(() => {
       {hasData ? (
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={cashFlowData}>
+            <BarChart data={cashFlowData}  margin={{ top: 10, right: 15, left: 5, bottom: 5 }}
+  barGap={8}>
               <CartesianGrid
                 strokeDasharray="3 3"
                 vertical={false}

@@ -95,21 +95,21 @@ export default function Dashboard({
          <SummaryCard
           title="Saldo disponível"
           value={currency(filteredSummary.balance)}
-          description="Saldo do período"
+          description="Saldo"
           icon={Wallet}
         />
 
         <SummaryCard
           title="Receitas"
           value={currency(filteredSummary.income)}
-          description="Entradas do mês"
+          description="Entradas"
           icon={TrendingUp}
         />
 
         <SummaryCard
           title="Despesas"
           value={currency(filteredSummary.expenses)}
-          description="Saídas do mês"
+          description="Saídas"
           icon={TrendingDown}
           positive={false}
         />
