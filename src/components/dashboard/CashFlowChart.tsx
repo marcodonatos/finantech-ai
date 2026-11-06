@@ -11,10 +11,13 @@ import {
   Legend,
 } from "recharts";
 
+import type { FinancialPeriod } from "../../utils/financialFilters";
+
 import type { Transaction } from "../../types";
 
 interface CashFlowChartProps {
   transactions: Transaction[];
+  period: FinancialPeriod;
 }
 
 const currency = (value: number) =>
@@ -25,48 +28,93 @@ const currency = (value: number) =>
 
 export default function CashFlowChart({
   transactions,
+  period,
 }: CashFlowChartProps) {
-  const cashFlowData = useMemo(() => {
-    const today = new Date();
+  
+const cashFlowData = useMemo(() => {
+  const today = new Date();
 
-    const months = Array.from({ length: 6 }, (_, index) => {
-      const date = new Date(
-        today.getFullYear(),
-        today.getMonth() - (5 - index),
-        1
-      );
+  const validDates = transactions
+    .map((transaction) => transaction.date.slice(0, 7))
+    .filter((date) => /^\d{4}-\d{2}$/.test(date))
+    .sort();
 
-      return {
-        key: `${date.getFullYear()}-${String(
-          date.getMonth() + 1
-        ).padStart(2, "0")}`,
-        month: date.toLocaleDateString("pt-BR", {
-          month: "short",
-          year: "2-digit",
-        }),
-        income: 0,
-        expenses: 0,
-      };
+  const start =
+    period === "all" && validDates.length > 0
+      ? new Date(`${validDates[0]}-01T12:00:00`)
+      : new Date(
+          today.getFullYear(),
+          today.getMonth() -
+            (period === "month" ? 0 : period === "3m" ? 2 : 5),
+          1
+        );
+
+  const end =
+    period === "all" && validDates.length > 0
+      ? new Date(
+          Math.max(
+            today.getFullYear(),
+            Number(validDates[validDates.length - 1].slice(0, 4))
+          ),
+          0,
+          1
+        )
+      : today;
+
+  // Para "Todo o período", usamos o último mês cadastrado
+  // ou o mês atual, o que for mais recente.
+  const lastMonth =
+    period === "all" && validDates.length > 0
+      ? validDates[validDates.length - 1] >
+        `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`
+        ? validDates[validDates.length - 1]
+        : `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`
+      : `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}`;
+
+  const months: {
+    key: string;
+    month: string;
+    income: number;
+    expenses: number;
+  }[] = [];
+
+  const cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+  const last = new Date(`${lastMonth}-01T12:00:00`);
+
+  while (cursor <= last) {
+    const key = `${cursor.getFullYear()}-${String(
+      cursor.getMonth() + 1
+    ).padStart(2, "0")}`;
+
+    months.push({
+      key,
+      month: cursor.toLocaleDateString("pt-BR", {
+        month: "short",
+        year: "2-digit",
+      }),
+      income: 0,
+      expenses: 0,
     });
 
-    transactions.forEach((transaction) => {
-      const monthKey = transaction.date.slice(0, 7);
+    cursor.setMonth(cursor.getMonth() + 1);
+  }
 
-      const month = months.find(
-        (item) => item.key === monthKey
-      );
+  const byMonth = new Map(months.map((month) => [month.key, month]));
 
-      if (!month) return;
+  transactions.forEach((transaction) => {
+    const month = byMonth.get(transaction.date.slice(0, 7));
+    if (!month) return;
 
-      if (transaction.type === "income") {
-        month.income += transaction.amount;
-      } else {
-        month.expenses += transaction.amount;
-      }
-    });
+    if (transaction.type === "income") {
+      month.income += transaction.amount;
+    } else {
+      month.expenses += transaction.amount;
+    }
+  });
 
-    return months;
-  }, [transactions]);
+  return months;
+}, [transactions, period]);
+
 
   const hasData = cashFlowData.some(
     (item) => item.income > 0 || item.expenses > 0
@@ -79,7 +127,7 @@ export default function CashFlowChart({
           Fluxo financeiro
         </h3>
         <p className="text-sm text-slate-500">
-          Receitas e despesas nos últimos 6 meses
+          Comparativo mensal de receitas e despesas
         </p>
       </div>
 
@@ -100,8 +148,12 @@ export default function CashFlowChart({
 
               <YAxis
                 stroke="#94a3b8"
+                width={70}
                 tickFormatter={(value: number) =>
-                  `R$${(value / 1000).toLocaleString("pt-BR")}k`
+                  value.toLocaleString("pt-BR", {
+                    notation: "compact",
+                    maximumFractionDigits: 1,
+                  })
                 }
               />
 
@@ -117,14 +169,16 @@ export default function CashFlowChart({
                 dataKey="income"
                 name="Receitas"
                 fill="#2563eb"
-                radius={[5, 5, 0, 0]}
+                radius={[6, 6, 0, 0]}
+                maxBarSize={44}
               />
 
               <Bar
                 dataKey="expenses"
                 name="Despesas"
-                fill="#93c5fd"
-                radius={[5, 5, 0, 0]}
+                fill="#fb7185"
+                radius={[6, 6, 0, 0]}
+                maxBarSize={44}
               />
             </BarChart>
           </ResponsiveContainer>

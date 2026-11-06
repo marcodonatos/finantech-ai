@@ -10,7 +10,6 @@ export default function App() {
 
   const {
     transactions,
-    summary,
     addTransaction,
     updateTransaction,
     deleteTransaction,
@@ -22,7 +21,7 @@ export default function App() {
       onNavigate={setActivePage}
     >
       {activePage === "Dashboard" ? (
-        <Dashboard summary={summary} transactions={transactions} />
+        <Dashboard transactions={transactions} />
       ) : activePage === "Movimentações" ? (
         <Transactions
           transactions={transactions}

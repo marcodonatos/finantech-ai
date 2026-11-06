@@ -8,33 +8,51 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-import type { Summary, Transaction } from "../types";
+import { useMemo, useState } from "react";
 
-interface DashboardProps {
-  summary: Summary;
-  transactions: Transaction[];
-}
+import type { Transaction } from "../types";
+import type { FinancialPeriod } from "../utils/financialFilters";
 
-
+import {
+  calculateSummary,
+  filterTransactionsByPeriod,
+} from "../utils/financialFilters";
 
 import SummaryCard from "../components/dashboard/SummaryCard";
 import CashFlowChart from "../components/dashboard/CashFlowChart";
 import ExpenseChart from "../components/dashboard/ExpenseChart";
 import RecentTransactions from "../components/dashboard/RecentTransactions";
 
-const currency = (value: number) =>
-  value.toLocaleString("pt-BR", {
+interface DashboardProps {
+  transactions: Transaction[];
+}
+
+
+const currency = (value: number): string => {
+  return value.toLocaleString("pt-BR", {
     style: "currency",
     currency: "BRL",
   });
+};
+
 
 export default function Dashboard({
-  summary,
   transactions,
 }: DashboardProps) {
+  const [period, setPeriod] = useState<FinancialPeriod>("6m");
+
+  const filteredTransactions = useMemo(
+    () => filterTransactionsByPeriod(transactions, period),
+    [transactions, period]
+  );
+
+  const filteredSummary = useMemo(
+    () => calculateSummary(filteredTransactions),
+    [filteredTransactions]
+  );
+
   return (
     <div className="space-y-6">
-
       {/* Boas-vindas */}
       <section>
         <h2 className="text-2xl font-bold text-slate-900">
@@ -46,26 +64,51 @@ export default function Dashboard({
         </p>
       </section>
 
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+        <div>
+          <p className="font-semibold text-slate-900">
+            Período de análise
+          </p>
+          <p className="text-xs text-slate-500">
+            Filtre os indicadores e gráficos financeiros.
+          </p>
+        </div>
+
+        <select
+          aria-label="Selecionar período financeiro"
+          value={period}
+          onChange={(event) =>
+            setPeriod(event.target.value as FinancialPeriod)
+          }
+          className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          <option value="month">Mês atual</option>
+          <option value="3m">Últimos 3 meses</option>
+          <option value="6m">Últimos 6 meses</option>
+          <option value="all">Todo o período</option>
+        </select>
+      </div>
+
       {/* Indicadores */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
          <SummaryCard
           title="Saldo disponível"
-          value={currency(summary.balance)}
+          value={currency(filteredSummary.balance)}
           description="Saldo do período"
           icon={Wallet}
         />
 
         <SummaryCard
           title="Receitas"
-          value={currency(summary.income)}
+          value={currency(filteredSummary.income)}
           description="Entradas do mês"
           icon={TrendingUp}
         />
 
         <SummaryCard
           title="Despesas"
-          value={currency(summary.expenses)}
+          value={currency(filteredSummary.expenses)}
           description="Saídas do mês"
           icon={TrendingDown}
           positive={false}
@@ -73,7 +116,7 @@ export default function Dashboard({
 
         <SummaryCard
           title="Taxa de economia"
-          value={`${summary.savingsRate.toFixed(1)}%`}
+          value={`${filteredSummary.savingsRate.toFixed(1)}%`}
           description="Percentual da renda economizado"
           icon={PiggyBank}
         />
@@ -82,8 +125,8 @@ export default function Dashboard({
 
       {/* Gráficos */}
       <section className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-        <CashFlowChart transactions={transactions} />
-        <ExpenseChart transactions={transactions} />
+        <CashFlowChart transactions={filteredTransactions} period={period} />
+        <ExpenseChart transactions={filteredTransactions} />
       </section>
 
       {/* Assistente IA */}
@@ -118,8 +161,10 @@ export default function Dashboard({
       </section>
 
       {/* Movimentações */}
-      <RecentTransactions transactions={transactions.slice(0, 5)} />
+      <RecentTransactions transactions={filteredTransactions.slice(0, 5)} />
 
     </div>
   );
 }
+
+

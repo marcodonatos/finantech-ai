@@ -16,13 +16,14 @@ interface ExpenseChartProps {
 }
 
 const COLORS = [
-  "#2563eb",
-  "#60a5fa",
-  "#93c5fd",
-  "#1d4ed8",
-  "#bfdbfe",
-  "#1e40af",
-  "#3b82f6",
+  "#2563eb", // Azul
+  "#f97316", // Laranja
+  "#10b981", // Verde
+  "#a855f7", // Roxo
+  "#ec4899", // Rosa
+  "#eab308", // Amarelo
+  "#06b6d4", // Ciano
+  "#ef4444", // Vermelho
 ];
 
 const currency = (value: number) =>
@@ -75,6 +76,8 @@ export default function ExpenseChart({
                 innerRadius={60}
                 outerRadius={95}
                 paddingAngle={3}
+                stroke="#ffffff"
+                strokeWidth={2}
               >
                 {expenseData.map((entry, index) => (
                   <Cell
