@@ -29,3 +29,33 @@ export type GoalInput = Pick<
   FinancialGoal,
   "name" | "targetAmount" | "deadline"
 >;
+
+
+export type InvestmentCategory =
+  | "Renda fixa"
+  | "Ações"
+  | "FIIs"
+  | "ETFs"
+  | "Criptomoedas"
+  | "Outros";
+
+export interface Investment {
+  id: string;
+  name: string;
+  ticker: string;
+  category: InvestmentCategory;
+  quantity: number;
+  averagePrice: number;
+  currentPrice: number;
+  createdAt: string;
+}
+
+export type InvestmentInput = Pick<
+  Investment,
+  | "name"
+  | "ticker"
+  | "category"
+  | "quantity"
+  | "averagePrice"
+  | "currentPrice"
+>;

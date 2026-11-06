@@ -8,6 +8,9 @@ import Goals from "./pages/Goals";
 import { useTransactions } from "./hooks/useTransactions";
 import { useGoals } from "./hooks/useGoals";
 
+import Investments from "./pages/Investments";
+import { useInvestments } from "./hooks/useInvestments";
+
 export default function App() {
   const [activePage, setActivePage] = useState("Dashboard");
 
@@ -25,6 +28,13 @@ export default function App() {
     deleteGoal,
     contributeToGoal,
   } = useGoals();
+
+  const {
+    investments,
+    addInvestment,
+    updateInvestment,
+    deleteInvestment,
+  } = useInvestments();
 
   return (
     <MainLayout
@@ -47,6 +57,13 @@ export default function App() {
           onUpdate={updateGoal}
           onDelete={deleteGoal}
           onContribute={contributeToGoal}
+        />
+        ) : activePage === "Investimentos" ? (
+        <Investments
+          investments={investments}
+          onAdd={addInvestment}
+          onUpdate={updateInvestment}
+          onDelete={deleteInvestment}
         />
       ) : (
         <section className="rounded-2xl border border-slate-200 bg-white p-8">

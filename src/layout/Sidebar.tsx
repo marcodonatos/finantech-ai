@@ -6,7 +6,6 @@ import {
   ChartNoAxesCombined,
   BrainCircuit,
   Wallet,
-  X,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -45,30 +44,28 @@ export default function Sidebar({
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="mb-10 flex items-center justify-between">
+        
+        
+        <div className="w-full border-b border-slate-100 px-5 py-6">
           <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-blue-600 p-2 text-white">
-              <Wallet size={23} />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white">
+              <Wallet size={21} strokeWidth={2.2} />
             </div>
 
-            <div>
-              <h1 className="text-lg font-bold text-slate-900">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg font-bold tracking-tight text-slate-900">
                 FinanTech
               </h1>
-              <p className="text-xs text-blue-600">AI Finance</p>
+              <p className="text-xs font-medium text-blue-600">
+                AI Finance
+              </p>
             </div>
           </div>
-
-          <button
-            onClick={onClose}
-            aria-label="Fechar menu"
-            className="text-slate-500 lg:hidden"
-          >
-            <X size={22} />
-          </button>
         </div>
 
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+
+
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400 " style={{ margin: 0, paddingTop: "10px", paddingBottom: "10px" }}>
           Menu principal
         </p>
 
