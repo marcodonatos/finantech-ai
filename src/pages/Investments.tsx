@@ -31,6 +31,8 @@ import {
   calculateAllocation,
 } from "../utils/investmentCalculations";
 
+import MarketOverview from "../components/market/MarketOverview";
+
 interface InvestmentsProps {
   investments: Investment[];
   onAdd: (data: InvestmentInput) => void;
@@ -197,7 +199,7 @@ export default function Investments({
               </div>
               <p className="mt-4 text-xl font-bold text-slate-900">
                 {item.value}
-              </p>
+              </p>             
             </div>
           );
         })}
@@ -245,6 +247,8 @@ export default function Investments({
           </div>
         )}
       </section>
+
+       <MarketOverview />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="mb-4 font-bold text-slate-900">
@@ -453,5 +457,6 @@ export default function Investments({
         </div>
       )}
     </div>
+    
   );
 }
